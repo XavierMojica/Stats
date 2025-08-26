@@ -1,0 +1,49 @@
+#R code
+
+powerholder = c()
+samplesizes = seq(2,20, by =1)
+
+for (i in 1:18)
+{
+  powerholder[i] = power.t.test(n = samplesizes[i], delta = 450, sd=500, sig.level = .1, type = "one.sample", alternative = 'one.sided')$power
+}
+
+plot(samplesizes, powerholder, type = 'l', col = 'gold', main = 'Power Curver', ylab = 'Power', lwd = 3)
+
+
+
+#Python code for above 
+
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.stats.power import TTestPower
+
+#  parameters
+effect_size_raw = 450
+std_dev = 500
+alpha = 0.1
+alternative = 'larger'  # aka'one.sided' for Mu > value, 'smaller' is for lower end of tail, and 2 sided is 'two-sided' 
+
+#  standardized effect size aka cohen's d
+effect_size = effect_size_raw / std_dev
+
+# Sample sizes from 2 to 19 matches iterations 
+sample_sizes = np.arange(2, 20)
+power_values = []
+
+# Initialize power calculator
+analysis = TTestPower()
+
+# Calculate power for each sample size
+for n in sample_sizes:
+    power = analysis.power(effect_size=effect_size, nobs=n, alpha=alpha, alternative=alternative)
+    power_values.append(power)
+
+# Plot
+plt.plot(sample_sizes, power_values, color='gold', linewidth=3)
+plt.ylabel('Power')
+plt.title('Power Curve')
+plt.xlabel('Sample Size')
+plt.ylim([0, 1.1])
+plt.grid(True)
+plt.show()
