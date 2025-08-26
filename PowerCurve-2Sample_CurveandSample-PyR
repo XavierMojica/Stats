@@ -1,0 +1,88 @@
+Two Sample T test: Power Curve
+
+#R code 
+
+powerholder = c()
+effectsize = seq(.1, 5, length = 20)
+
+for(i in 1:20)
+{powerholder[i] = power.t.test(n=65, delta = effectsizes[i], sd=4, sig.level=.01, type = 'two.sample', alternative ='one.sided')$power}
+
+plot(effectsizes, powerholder, type = 'l', main = 'Power Curve', ylab = 'Power', lwd = 3)
+
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.stats.power import TTestIndPower
+
+# Initialize parameters
+n_per_group = 65
+sd = 4
+alpha = 0.01
+alternative = 'larger'  # one-sided test
+effect_sizes = np.linspace(0.1, 5, 20)
+
+# Convert raw effect sizes (delta) to standardized (Cohen's d)
+standardized_effects = effect_sizes / sd
+
+# Initialize power analysis object
+analysis = TTestIndPower()
+
+# Calculate power for each effect size
+power_values = [
+    analysis.power(effect_size=d, nobs1=n_per_group, alpha=alpha, alternative=alternative)
+    for d in standardized_effects
+]
+
+# Plot
+plt.plot(effect_sizes, power_values, linewidth=3)
+plt.title('Power Curve')
+plt.xlabel('Raw Effect Size (delta)')
+plt.ylabel('Power')
+plt.ylim([0, 1.1])
+plt.grid(True)
+plt.show()
+
+
+Two sample T test: power curve for sample sizes
+
+#R code 
+powerholder = c()
+samplesizes = seq(10, 200, length = 20)
+
+for ( i in 1:20)
+{powerholder[i] = power.t.test(n=samplesizes[i], delta = 1.6, sd=4, sig.level=.01, type = 'two.sample', alternative ='one.sided')$power}
+
+plot(sample_sizes, powerholder, type = 'l', main = 'Power Curve', ylab = 'Power', lwd = 3, col = 'green')
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.stats.power import TTestIndPower
+
+# Parameters
+delta = 1.6          # raw effect size
+sd = 4               # standard deviation
+alpha = 0.01         # significance level
+alternative = 'larger'  # one-sided test
+sample_sizes = np.linspace(10, 200, 20)  # same as seq(10, 200, length = 20) in R
+
+# Convert to standardized effect size (Cohen's d)
+effect_size = delta / sd  # 1.6 / 4 = 0.4
+
+# Initialize power calculator
+analysis = TTestIndPower()
+
+# Calculate power for each sample size
+power_values = [
+    analysis.power(effect_size=effect_size, nobs1=n, alpha=alpha, alternative=alternative)
+    for n in sample_sizes
+]
+
+# Plotting
+plt.plot(sample_sizes, power_values, color='green', linewidth=3)
+plt.title('Power Curve')
+plt.xlabel('Sample Size per Group')
+plt.ylabel('Power')
+plt.ylim([0, 1.1])
+plt.grid(True)
+plt.show()
