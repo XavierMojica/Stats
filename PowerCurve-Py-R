@@ -1,0 +1,47 @@
+#R code 
+powerholder = c()
+effectsizes = seq(50, 700, length = 20)
+
+for(i in 1:20)
+{
+  powerholder[i] = power.t.test(n = 8, delta = effectsizes[i], sd=500, sig.level = .1, type = "one.sample", alternative = 'one.sided')$power
+}
+
+plot(effectsizes, powerholder, type = 'l', col = 'blue', main = 'Power Curve', ylab = "Power", lwd = 5)
+
+
+
+
+
+#Python version of Power Curve
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.stats.power import TTestPower
+
+# Create power analysis instance
+power_analysis = TTestPower()
+
+# Parameters
+effect_sizes = np.linspace(50, 700, 20)
+sample_size = 8
+std_dev = 500
+alpha = 0.1
+alternative = 'larger'  # one-sided
+
+# Convert raw effect size (delta) to standardized effect size (Cohen's d)
+standardized_effects = effect_sizes / std_dev
+
+# Compute power for each effect size
+power_values = [
+    power_analysis.power(effect_size=d, nobs=sample_size, alpha=alpha, alternative=alternative)
+    for d in standardized_effects
+]
+
+# Plot
+plt.plot(effect_sizes, power_values, color='blue', linewidth=3)
+plt.title("Power Curve")
+plt.xlabel("Effect Size (delta)")
+plt.ylabel("Power")
+plt.ylim([0, 1.1])
+plt.grid(True)
+plt.show()
